@@ -1,23 +1,36 @@
 import Task from "../model/TaskSchema.js";
 
 
+
+
 export const CreateTask = async (req, res) => {
     const { task } = req.body;
-    
 
     try {
+        if (!task || typeof task !== 'string') {
+            return res.status(400).json({
+                status: "error",
+                message: "Task name is required and must be a string",
+            });
+        }
+
         const newTask = await Task.create({ task });
-        res.status(200).json({
+
+        res.status(201).json({
             status: "success",
-            message: "successfully created",
+            message: "Task created successfully",
+            task: newTask,
         });
     } catch (error) {
+        console.error("Error creating task:", error);
         res.status(500).json({
             status: "error",
             message: "Task creation failed",
         });
     }
 };
+
+
 export const FetchTask = async(req,res)=>{
     const task = await Task.find()
     if(task){
